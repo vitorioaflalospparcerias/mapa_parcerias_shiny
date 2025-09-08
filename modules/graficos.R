@@ -1,4 +1,3 @@
-
 # ===================================================================================
 # OBJETIVO PRINCIPAL: MÓDULO DE GRÁFICOS E KPIs
 # ===================================================================================
@@ -26,7 +25,7 @@ library(ggplot2)
 library(plotly)
 library(stringr)
 
-### --- UI do Módulo de Gráficos (COM CONTAINERS) --- ###
+### --- UI do Módulo de Gráficos (COM GRÁFICO DE ZONA) --- ###
 graficosUI <- function(id) {
   ns <- NS(id)
   tagList(
@@ -45,12 +44,12 @@ graficosUI <- function(id) {
     ),
     # O último não precisa de margem abaixo, então removemos a margem via estilo inline
     div(class = "chart-container", style = "margin-bottom: 0;",
-        plotlyOutput(ns("plot_distrito"), height = "100%")
+        plotlyOutput(ns("plot_zona"), height = "100%") # <<< ALTERAÇÃO AQUI >>>
     )
   )
 }
 
-### --- Server do Módulo de Gráficos (COM FUNDO TRANSPARENTE) --- ###
+### --- Server do Módulo de Gráficos (COM GRÁFICO DE ZONA) --- ###
 graficosServer <- function(id, dados_filtrados) {
   moduleServer(id, function(input, output, session) {
     
@@ -120,17 +119,18 @@ graficosServer <- function(id, dados_filtrados) {
         )
     })
     
-    output$plot_distrito <- renderPlotly({
+    # <<< GRÁFICO DE DISTRITO SUBSTITUÍDO POR GRÁFICO DE ZONA >>>
+    output$plot_zona <- renderPlotly({
       dados <- dados_filtrados(); req(nrow(dados) > 0)
-      dados_grafico <- dados |> st_drop_geometry() |> distinct(ppp_nome, .keep_all = TRUE) |> filter(!is.na(NM_DIST)) |> count(NM_DIST, name = "Quantidade") |> top_n(10, Quantidade) |> mutate(NM_DIST_wrap = str_wrap(NM_DIST, width = 20))
+      dados_grafico <- dados |> st_drop_geometry() |> distinct(ppp_nome, .keep_all = TRUE) |> filter(!is.na(zona)) |> count(zona, name = "Quantidade")
       
-      p <- ggplot(dados_grafico, aes(x = reorder(NM_DIST_wrap, Quantidade), y = Quantidade, text = paste0("Distrito: ", NM_DIST, "\nQuantidade: ", Quantidade))) +
+      p <- ggplot(dados_grafico, aes(x = reorder(zona, Quantidade), y = Quantidade, text = paste0("Zona: ", zona, "\nQuantidade: ", Quantidade))) +
         geom_col(fill = "#023047", show.legend = FALSE) + coord_flip() + labs(x = NULL, y = NULL) + theme_minimal() +
         theme(text = element_text(size = 10), panel.grid.major.y = element_blank(), panel.grid.minor.x = element_blank(), panel.grid.major.x = element_line(color = "#E0E0E0", linetype = "dotted"))
       
       ggplotly(p, tooltip = "text") %>%
         layout(
-          title = list(text = "<b>Top 10 Distritos com Projetos</b>", y = 0.95, x = 0.5, xanchor = 'center', yanchor = 'top', font = list(size = 14)),
+          title = list(text = "<b>Projetos por Zona</b>", y = 0.95, x = 0.5, xanchor = 'center', yanchor = 'top', font = list(size = 14)),
           margin = list(l = 10, r = 10, b = 20, t = 40),
           paper_bgcolor = 'rgba(0,0,0,0)',
           plot_bgcolor = 'rgba(0,0,0,0)'

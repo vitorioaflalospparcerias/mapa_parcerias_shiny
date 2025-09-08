@@ -61,7 +61,9 @@ concessoes_geosampa <- concessoes_geosampa %>%
     "Terminal Grajau" = "Terminal Grajaú",
     "Terminal Cachoerinha" = "Terminal Cachoeirinha",
     "Parque Jacintho Albero" = "Parque Jacintho Alberto",
-    "Terminal Paralheiros" = "Terminal Parelheiros"
+    "Terminal Paralheiros" = "Terminal Parelheiros",
+    "Cemitério do Lageado" = "Cemitério do Lajeado",
+    "Parque do Lageado" = "Parque do Lajeado"
   ))) %>%
   mutate(ppp_conced = str_replace_all(ppp_conced, c(
     "Secetaria Municipal de Educação" = "Secretaria Municipal de Educação"
@@ -186,7 +188,7 @@ equipamentos_lotes <- c(
   "Cemitério de Tremembé" = "Cemitérios - Bloco 1",
   "Cemitério do Araçá" = "Cemitérios - Bloco 2",
   "Cemitério do Campo Grande" = "Cemitérios - Bloco 3",
-  "Cemitério do Lageado" = "Cemitérios - Bloco 3",
+  "Cemitério do Lajeado" = "Cemitérios - Bloco 3",
   "Cemitério Dom Bosco" = "Cemitérios - Bloco 2",
   "Cemitério São Luis" = "Cemitérios - Bloco 4",
   "Cemitério São Paulo" = "Cemitérios - Bloco 2",
@@ -224,7 +226,7 @@ equipamentos_lotes <- c(
   "Parada 14 Bis" = "Equipamento único",
   "Parque Brigadeiro Faria Lima" = "1º Lote de Parques",
   "Parque do Ibirapuera" = "1º Lote de Parques",
-  "Parque do Lageado" = "1º Lote de Parques",
+  "Parque do Lajeado" = "1º Lote de Parques",
   "Parque Eucaliptos" = "1º Lote de Parques",
   "Parque Jacintho Alberto" = "1º Lote de Parques",
   "Parque Jardim da Felicidade" = "1º Lote de Parques",
@@ -272,8 +274,131 @@ equipamentos_lotes <- c(
 projetos <- projetos %>%
   mutate(lote = equipamentos_lotes[ppp_nome])
 
-# Para acessar um valor específico (exemplo)
-# print(equipamentos_lotes["Cemitério da Consolação"])
+projetos <- projetos %>%
+  mutate(ppp_conced = str_replace_all(ppp_conced, c(
+    "São Paulo Regula" = "SP Regula",
+    "Secretaria Municipal De Mobilidade E Trânsito" = "SMT",
+    "Secretaria Municipal Do Verde E Meio Ambiente" = "SVMA",
+    "Secretaria Muncipal De Subprefeituras" = "SMSUB",
+    "Secreatria Municipal De Esportes E Lazer" = "SEME",
+    "Subprefeitura Da Lapa" = "Sub Lapa",
+    "Secretaria Municipal De Educação" = "SME",
+    "Sp Turis" = "SP Turis",
+    "Secretaria Municipal De Cultura" = "SMC",
+    "Secretaria Municipal Da Pessoa Com Deficiência" = "SMPED"
+  ))) %>%
+  mutate(lote = str_replace_all(lote, c(
+    "1º Lote de CEUs" = "1º Lote de CEUs PPP",
+    "CEUs - IB" = "CEUs MROSC"
+  )))
+
+
+zona <- c(
+  "Bela Vista" = "Central",
+  "Bom Retiro" ="Central",
+  "Cambuci" = "Central",
+  "Consolação" = "Central",
+  "Liberdade" = "Central",
+  "República" = "Central",
+  "Santa Cecília" = "Central",
+  "Sé" = "Central",
+  "Aricanduva" = "Leste",
+  "Carrão" = "Leste",
+  "Vila Formosa" = "Leste",
+  "Cidade Tiradentes" = "Leste",
+  "Ermelino Matarazzo" = "Leste",
+  "Ponte Rasa" = "Leste",
+  "Guaianases" = "Leste",
+  "Lajeado" = "Leste",
+  "Itaim Paulista" = "Leste",
+  "Vila Curuçá" = "Leste",
+  "Cidade Lider" = "Leste",
+  "Itaquera" = "Leste",
+  "José Bonifácio" = "Leste",
+  "Parque Do Carmo" = "Leste",
+  "Água Rasa" = "Leste",
+  "Belém" = "Leste",
+  "Brás" = "Leste",
+  "Mooca" = "Leste",
+  "Pari" = "Leste",
+  "Tatuapé" = "Leste",
+  "Penha" = "Leste",
+  "Artur Alvim" = "Leste",
+  "Cangaiba" = "Leste",
+  "Vila Matilde" = "Leste",
+  "Iguatemi" = "Leste",
+  "São Mateus" = "Leste",
+  "São Rafael" = "Leste",
+  "Vila Jacuí" = "Leste",
+  "São Lucas" = "Leste",
+  "Sapopemba" = "Leste",
+  "Vila Prudente" = "Leste",
+  "Cachoeirinha" = "Norte",
+  "Casa Verde" = "Norte",
+  "Limão" = "Norte",
+  "Brasilândia" = "Norte",
+  "Freguesia Do Ó" = "Norte",
+  "Jaçanã" = "Norte",
+  "Tremembé" = "Norte",
+  "Anhanguera" = "Norte",
+  "Perus" = "Norte",
+  "Jaraguá" = "Norte",
+  "Pirituba" = "Norte",
+  "São Domingos" = "Norte",
+  "Mandaqui" = "Norte",
+  "Santana" = "Norte",
+  "Tucuruvi" = "Norte",
+  "Vila Guilherme" = "Norte",
+  "Vila Maria" = "Norte",
+  "Vila Medeiros" = "Norte",
+  "Butantã" = "Oeste",
+  "Morumbi" = "Oeste",
+  "Raposo Tavares" = "Oeste",
+  "Rio Pequeno" = "Oeste",
+  "Vila Sônia" = "Oeste",
+  "Barra Funda" = "Oeste",
+  "Jaguara" = "Oeste",
+  "Jaguaré" = "Oeste",
+  "Lapa" = "Oeste",
+  "Perdizes" = "Oeste",
+  "Vila Leopoldina" = "Oeste",
+  "Alto De Pinheiros" = "Oeste",
+  "Itaim Bibi" = "Oeste",
+  "Jardim Paulista" = "Oeste",
+  "Pinheiros" = "Oeste",
+  "Campo Limpo" = "Sul",
+  "Capão Redondo" = "Sul",
+  "Vila Andrade" = "Sul",
+  "Cidade Dutra" = "Sul",
+  "Grajaú" = "Sul",
+  "Socorro" = "Sul",
+  "Cidade Ademar" = "Sul",
+  "Pedreira" = "Sul",
+  "Cursino" = "Sul",
+  "Ipiranga" = "Sul",
+  "Sacomã" = "Sul",
+  "Jabaquara" = "Sul",
+  "Jardim Ângela" = "Sul",
+  "Jardim São Luís" = "Sul",
+  "Marsilac" = "Sul",
+  "Parelheiros" = "Sul",
+  "Campo Belo" = "Sul",
+  "Campo Grande" = "Sul",
+  "Santo Amaro" = "Sul",
+  "Moema" = "Sul",
+  "Saúde" = "Sul",
+  "Vila Mariana" = "Sul",
+  "São Miguel" = "Leste",
+  "Jardim Helena" = "Leste"
+  
+)
+
+
+distritos <- distritos %>%
+  mutate(zona = zona[NM_DIST])
+projetos <- projetos %>%
+  left_join(st_drop_geometry(distritos %>% select(NM_DIST, zona)), by = "NM_DIST")
+
 # --- ETAPA 7: SALVAR OS OBJETOS PROCESSADOS ---
 # Salva os dataframes limpos e prontos para uso em formato .rds.
 saveRDS(distritos, file = "DADOS/distritos_processados.rds")

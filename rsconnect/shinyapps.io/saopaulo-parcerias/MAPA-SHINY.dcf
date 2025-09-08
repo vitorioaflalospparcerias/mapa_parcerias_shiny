@@ -1,0 +1,12 @@
+name: MAPA-SHINY
+title: MAPA-SHINY
+username: saopaulo-parcerias
+account: saopaulo-parcerias
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 15340008
+bundleId: 10857639
+url: https://saopaulo-parcerias.shinyapps.io/MAPA-SHINY/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

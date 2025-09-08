@@ -53,6 +53,10 @@ opcoes_modalidade <- c("Todos", unique(projetos$ppp_modali))
 opcoes_concedente <- c("Todos", unique(projetos$ppp_conced))
 opcoes_nome <- c("Todos", sort(unique(projetos$ppp_nome)))
 
+# <<< ALTERAÇÃO AQUI >>>
+# Adicionado para o filtro de Zona
+opcoes_zona <- c("Todos", sort(unique(na.omit(projetos$zona))))
+
 # ADICIONADO PARA O FILTRO DE LOTE
 # Usamos na.omit para remover projetos sem lote e sort para ordenar
 lotes_com_projetos <- sort(unique(na.omit(projetos$lote)))
@@ -102,11 +106,11 @@ ui <- fluidPage(
         box-sizing: border-box; 
         background-color: #FFF5E1; /* Fundo amarelo claro */
         border: 1px solid #FADCB3;   /* Borda sutil */
-        border-radius: 8px;        /* Cantos arredondados */
+        border-radius: 8px;      /* Cantos arredondados */
         padding: 20px; 
-        overflow-y: auto;          /* Adiciona barra de rolagem se o conteúdo for maior que a tela */
-        display: flex;             /* Adicionado para alinhar os logos no final */
-        flex-direction: column;    /* Adicionado para alinhar os logos no final */
+        overflow-y: auto;        /* Adiciona barra de rolagem se o conteúdo for maior que a tela */
+        display: flex;           /* Adicionado para alinhar os logos no final */
+        flex-direction: column;  /* Adicionado para alinhar os logos no final */
       }
       .sidebar-panel h3 {color: #D35400; font-size: 18px; font-weight: 700; margin-top: 0;}
 
@@ -182,7 +186,7 @@ ui <- fluidPage(
 
       /* --- ESTILOS PARA O TÍTULO CUSTOMIZADO --- */
       .custom-title-panel {
-        padding: 10px 20px;
+        padding: 5px 20px;
         border-bottom: 1px solid #ddd;
         background-color: white;
         flex-shrink: 0; /* Impede que o header encolha */
@@ -228,8 +232,8 @@ ui <- fluidPage(
   div(class = "custom-title-panel",
       div(class = "title-wrapper",
           div(class = "title-left",
-              tags$img(src = "imagens/logo_pref.png", height = "50px"),
-              tags$img(src = "imagens/logo_spp.png", height = "50px")
+              tags$img(src = "imgs/logo_pref.png", height = "40px"),
+              tags$img(src = "imgs/logo_spp.png", height = "40px")
           ),
           div(class = "title-center",
               tags$h1(tags$strong("Mapa de Parcerias"))
@@ -246,6 +250,7 @@ ui <- fluidPage(
               filtrosUI(
                 id = "filtros_app",
                 opcoes_distrito = opcao_distritos,
+                opcoes_zona = opcoes_zona, # <<< ALTERAÇÃO AQUI >>>
                 opcoes_lote = opcoes_lote,
                 opcoes_nome = opcoes_nome,
                 opcoes_modalidade = opcoes_modalidade,

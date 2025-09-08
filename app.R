@@ -11,8 +11,7 @@
 # Ele funciona como o "maestro" que junta as duas partes essenciais da aplicação.
 #
 # ====================================================================================
-
-shiny::addResourcePath(prefix = "imagens", directoryPath = file.path(getwd(), "www", "imgs"))
+#shiny::addResourcePath(prefix = "imagens", directoryPath = file.path(getwd(), "www", "imgs"))
 
 # Carrega a biblioteca principal do Shiny.
 library(shiny)

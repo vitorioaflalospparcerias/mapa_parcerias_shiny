@@ -78,4 +78,5 @@ server <- function(input, output, session) {
   # Passa o mesmo dataframe REATIVO. Os gráficos e KPIs também reagirão.
   graficosServer(id = "graficos_main", dados_filtrados = projetos_filtrados)
   
+  
 }
