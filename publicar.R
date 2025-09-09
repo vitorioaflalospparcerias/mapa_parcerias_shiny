@@ -2,7 +2,7 @@
 
 # 1. Carregar a biblioteca necessária
 library(rsconnect)
-rsconnect::setAccountInfo(name='saopaulo-parcerias', token='F489E4B2DE045534558CB22808FD3099', secret='61XRWBp+bLltugJF9W213zO5On8hZG9SGiyM7NsR')
+rsconnect::setAccountInfo(name='saopaulo-parcerias', token='56EE1707084C7F0979772937C8F07318', secret='BM316BYtkhoNLClscYbassBoJAbUFLICD1LaPX4E')
 
 # 3. Listar TODOS os arquivos e pastas que o aplicativo precisa
 #    Esta é a parte mais importante!
@@ -23,7 +23,7 @@ app_files <- c(
 rsconnect::deployApp(
   appDir = getwd(),                 # Diretorio do app (o atual)
   appFiles = app_files,             # Força a inclusão dos nossos arquivos!
-  appName = "mapa-de-parcerias-sp", # Escolha um nome único para seu app na URL
+  appName = "parcerias-sp", # Escolha um nome único para seu app na URL
   account = "saopaulo-parcerias" # Seu nome de usuário do shinyapps.io
 )
 

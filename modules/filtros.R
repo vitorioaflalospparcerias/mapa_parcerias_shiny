@@ -17,8 +17,10 @@
 #    - **Retorna** o dataframe filtrado como um objeto reativo.
 #
 # ===================================================================================
+library(shiny)
+library(bslib) # Adicionado para usar a função tooltip()
 
-### --- UI do Módulo de Filtros (COM ZONA) --- ###
+### --- UI do Módulo de Filtros (COM OBSERVAÇÃO EM TOOLTIP) --- ###
 filtrosUI <- function(id, opcoes_distrito, opcoes_zona, opcoes_lote, opcoes_nome, opcoes_modalidade, opcoes_concedente) {
   ns <- NS(id)
   
@@ -28,7 +30,23 @@ filtrosUI <- function(id, opcoes_distrito, opcoes_zona, opcoes_lote, opcoes_nome
         
         # Conteúdo principal dos filtros
         div(
-          h3("Selecione os filtros"),
+          
+          # --- TÍTULO COM ÍCONE DE AJUDA (ALTERADO) ---
+          div(style = "display: flex; align-items: center; gap: 8px; margin-bottom: 1rem;",
+              tags$h3("Selecione os filtros", style = "margin: 0;"),
+              bslib::tooltip(
+                tags$span(icon("question-circle")),
+                HTML(
+                  "<strong>Observação:</strong>
+                  <ul>
+                    <li>Todos os filtros afetam o mapa e os gráficos.</li>
+                    <li>Os gráficos indicam a quantidade de equipamentos por modalidade, poderes concedentes e região. A métrica é a contagem de equipamentos, não de contratos (contratos com mais de um equipamento terão cada equipamento contado unicamente).</li>
+                  </ul>"
+                ),
+                placement = "right"
+              )
+          ),
+          # --- FIM DA ALTERAÇÃO ---
           
           # --- Filtro de Zona com Reset ---
           div(class = "filtro-container",
@@ -123,6 +141,9 @@ filtrosUI <- function(id, opcoes_distrito, opcoes_zona, opcoes_lote, opcoes_nome
                 width = "100%"
               )
           )
+          
+          # O bloco de texto antigo de observações foi removido daqui.
+          
         ),
         
         # Logos no final da sidebar
@@ -135,7 +156,7 @@ filtrosUI <- function(id, opcoes_distrito, opcoes_zona, opcoes_lote, opcoes_nome
 }
 
 
-### --- Server do Módulo de Filtros (COM ZONA) --- ###
+### --- Server do Módulo de Filtros (SEM ALTERAÇÕES) --- ###
 filtrosServer <- function(id, dados_brutos) {
   moduleServer(id, function(input, output, session) {
     

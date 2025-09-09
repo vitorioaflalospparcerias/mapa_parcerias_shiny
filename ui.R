@@ -22,6 +22,7 @@
 
 # Carrega a biblioteca principal do Shiny para as funções de UI.
 library(shiny)
+library(bslib) # Adicionado para usar temas e componentes Bootstrap 5
 # Carrega a biblioteca dplyr, embora seja mais usada no server, pode ser útil para alguma manipulação rápida.
 library(dplyr)
 # Carrega a biblioteca tidyr para manipulação de dados.
@@ -31,8 +32,8 @@ library(plotly)
 
 # `source` lê e executa o código de outros arquivos R.
 # Aqui, estamos carregando as funções que definem as UIs de cada módulo.
-source("modules/mapa.R")      # Carrega a função mapaUI()
-source("modules/filtros.R")   # Carrega a função filtrosUI()
+source("modules/mapa.R")     # Carrega a função mapaUI()
+source("modules/filtros.R")  # Carrega a função filtrosUI()
 source("modules/graficos.R") # Carrega a função graficosUI()
 
 
@@ -53,7 +54,6 @@ opcoes_modalidade <- c("Todos", unique(projetos$ppp_modali))
 opcoes_concedente <- c("Todos", unique(projetos$ppp_conced))
 opcoes_nome <- c("Todos", sort(unique(projetos$ppp_nome)))
 
-# <<< ALTERAÇÃO AQUI >>>
 # Adicionado para o filtro de Zona
 opcoes_zona <- c("Todos", sort(unique(na.omit(projetos$zona))))
 
@@ -74,6 +74,8 @@ opcao_distritos <- c("Todos", distritos_com_projetos)
 
 # `fluidPage` cria uma página web fluida, que se adapta ao tamanho da tela do navegador.
 ui <- fluidPage(
+  # Adiciona o tema Bootstrap 5 para garantir compatibilidade com bslib
+  theme = bslib::bs_theme(version = 5),
   # `fluid = TRUE` faz com que o layout ocupe 100% da largura da tela.
   fluid = TRUE,
   
@@ -85,111 +87,131 @@ ui <- fluidPage(
       /* ESTILOS GERAIS E ESTRUTURA                             */
       /* ====================================================== */
       
-      /* Define a altura total e remove margens/preenchimentos padrão do navegador. */
       html, body {height: 100%; margin: 0; padding: 0; overflow: hidden; background-color: #f5f5ff;}
       
-      /* Define o container principal da página para usar Flexbox, organizando os elementos em coluna. */
       .container-fluid {height: 100%; display: flex; flex-direction: column; padding: 0;}
       
-      /* O wrapper das 3 colunas principais. flex-grow faz ele ocupar todo o espaço vertical disponível. */
       .main-content-wrapper {flex-grow: 1; display: flex; height: 0; padding: 10px; gap: 10px;}
 
-      /* Estilo genérico para as colunas principais (filtros, mapa, gráficos) para garantir altura total. */
-      .main-content-wrapper > [class*='col-sm-'] { height: 100%; padding: 0; box-sizing: border-box; }
-      
+      /* LARGURAS DAS COLUNAS REFINADAS */
+      .sidebar-column { flex: 0 1 18%; min-width: 280px; }
+      .map-column     { flex: 1 1 40%; }
+      .charts-column  { flex: 1 1 42%; }
+
+      .sidebar-column, .map-column, .charts-column {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+      }
+      .sidebar-panel, .map-panel, .content-panel {
+          flex-grow: 1;
+      }
       
       /* ====================================================== */
       /* PAINEL DE FILTROS (ESQUERDA)                           */
       /* ====================================================== */
       .sidebar-panel { 
-        height: 100%; 
         box-sizing: border-box; 
-        background-color: #FFF5E1; /* Fundo amarelo claro */
-        border: 1px solid #FADCB3;   /* Borda sutil */
-        border-radius: 8px;      /* Cantos arredondados */
+        background-color: #FFF5E1;
+        border: 1px solid #FADCB3;
+        border-radius: 8px;
         padding: 20px; 
-        overflow-y: auto;        /* Adiciona barra de rolagem se o conteúdo for maior que a tela */
-        display: flex;           /* Adicionado para alinhar os logos no final */
-        flex-direction: column;  /* Adicionado para alinhar os logos no final */
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
       }
-      .sidebar-panel h3 {color: #D35400; font-size: 18px; font-weight: 700; margin-top: 0;}
+      .sidebar-panel h3 {color: #D35400; font-size: 22px; font-weight: 700; margin-top: 0;}
 
       
       /* ====================================================== */
       /* PAINEL DO MAPA (CENTRO)                                */
       /* ====================================================== */
-      .map-panel { height: 100%; border-radius: 8px; overflow: hidden; }
-      .map-panel .leaflet { height: 100% !important; } /* !important força o mapa a ocupar 100% da altura do painel. */
+      .map-panel { border-radius: 8px; overflow: hidden; }
+      .map-panel .leaflet { height: 100% !important; }
       
       
       /* ====================================================== */
       /* PAINEL DE CONTEÚDO (DIREITA)                           */
       /* ====================================================== */
       .content-panel { 
-        height: 100%; 
-        background-color: #f8f9fa; /* Fundo cinza claro */
+        background-color: #f8f9fa;
         border-radius: 8px; 
-        padding: 10px; 
+        padding: 15px; 
         overflow-y: auto; 
         box-sizing: border-box; 
         display: flex; 
         flex-direction: column; 
-        gap: 0; /* Remove o gap para controlar o espaçamento com margin nos filhos */
+        gap: 15px;
       }
       
       /* --- ESTILOS DOS KPIs --- */
-      .kpi-row { display: flex; gap: 10px; margin-bottom: 10px; }
-      .kpi-row > div { flex: 1; }
+      /* CORRIGIDO: Cards lado a lado, ocupando a largura total da linha */
+      .kpi-row { 
+        display: flex; 
+        flex-direction: row; /* Garante que fiquem em linha */
+        gap: 15px; 
+      }
+      .kpi-row > div { 
+        flex: 1; /* Distribui o espaço igualmente entre os 3 cards */
+      }
       .kpi-box {
-          background-color: #FFF5E1; /* Mesma cor da sidebar */
+          background-color: #FFF5E1;
           border: 1px solid #FADCB3; 
           padding: 10px;
           border-radius: 5px; 
           text-align: center; 
-          height: auto;
       }
       .kpi-box h5 {
-          font-size: 13px; 
-          color: #023047; /* Mesma cor das barras do gráfico */
-          margin-top: 0; 
-          margin-bottom: 5px; 
+          font-size: 14px; 
+          color: #023047;
+          margin: 0 0 5px 0; 
           text-transform: uppercase; 
           font-weight: bold;
       }
       .kpi-box p {
-          font-size: 15px; 
+          font-size: 18px; 
           font-weight: 700; 
-          color: #D35400; /* Laranja escuro para o valor principal */
-          margin-bottom: 0;
+          color: #D35400;
+          margin: 0;
       }
       
       /* --- ESTILOS DOS GRÁFICOS --- */
-      .plotly.html-widget { height: 100% !important; min-height: 280px !important; }
+      .plotly.html-widget { height: 100% !important; width: 100% !important; }
 
       .chart-container {
-        background-color: #FFF5E1; /* Mesma cor da sidebar */
+        background-color: #FFF5E1;
         border: 1px solid #FADCB3; 
         border-radius: 8px;
         padding: 10px;
-        margin-bottom: 10px; /* Espaço entre os gráficos */
-        height: 320px; 
         display: flex;
         flex-direction: column;
+        flex: 1;
+        min-height: 250px;
       }
 
       /* --- ESTILOS PARA FILTROS INDIVIDUAIS COM RESET --- */
-      .filtro-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-      .filtro-header label { margin-bottom: 0; }
+      .filtro-header label { 
+        margin-bottom: 0; 
+        font-size: 16px; 
+        font-weight: 600;
+      }
       .btn-reset { background: none; border: none; padding: 0 5px; color: #888; font-size: 12px; cursor: pointer; }
       .btn-reset:hover { color: #333; }
-      .filtro-container { margin-bottom: 15px; }
+      
+      .filtro-container { 
+        margin-bottom: 20px; 
+      } 
+      
+      .selectize-input, .selectize-dropdown-content .option {
+        font-size: 15px;
+      }
 
       /* --- ESTILOS PARA O TÍTULO CUSTOMIZADO --- */
       .custom-title-panel {
         padding: 5px 20px;
         border-bottom: 1px solid #ddd;
         background-color: white;
-        flex-shrink: 0; /* Impede que o header encolha */
+        flex-shrink: 0;
       }
       .title-wrapper {
         display: flex;
@@ -198,32 +220,33 @@ ui <- fluidPage(
         width: 100%;
       }
       .title-left, .title-right {
-        flex: 1; /* Ocupa espaço igual nas laterais */
+        flex: 1;
         display: flex;
         align-items: center;
       }
       .title-right { justify-content: flex-end; }
       .title-center { flex: 2; text-align: center; }
-      .title-center h2 { margin: 0; font-size: 24px; }
+      
+      .title-center h1 { 
+        margin: 0; 
+        font-size: 30px; 
+      }
+      
       .title-left img { margin-right: 15px; }
 
-      /* ====================================================== */
-      /* NOVO ESTILO: Logos no final da Sidebar                 */
-      /* ====================================================== */
+      /* Logos no final da Sidebar */
       .sidebar-logos {
         display: flex;
         justify-content: space-around;
         align-items: center;
         width: 100%;
-        margin-top: auto; /* Empurra os logos para o final */
+        margin-top: auto;
         padding-top: 15px;
         border-top: 1px solid #FADCB3;
-        box-sizing: border-box;
       }
       .sidebar-logo {
         max-width: 48%;
         height: auto;
-        display: block;
       }
     "))
   ),
@@ -245,12 +268,12 @@ ui <- fluidPage(
   # --- 6. LAYOUT PRINCIPAL DAS COLUNAS ---
   div(class = "main-content-wrapper",
       # Coluna 1: Barra Lateral (Filtros)
-      div(class = "col-sm-2",
+      div(class = "sidebar-column",
           div(class = "sidebar-panel",
               filtrosUI(
                 id = "filtros_app",
                 opcoes_distrito = opcao_distritos,
-                opcoes_zona = opcoes_zona, # <<< ALTERAÇÃO AQUI >>>
+                opcoes_zona = opcoes_zona,
                 opcoes_lote = opcoes_lote,
                 opcoes_nome = opcoes_nome,
                 opcoes_modalidade = opcoes_modalidade,
@@ -259,13 +282,13 @@ ui <- fluidPage(
           )
       ),
       # Coluna 2: Mapa
-      div(class = "col-sm-4",
+      div(class = "map-column",
           div(class = "map-panel",
               mapaUI("mapa")
           )
       ),
       # Coluna 3: Gráficos e KPIs
-      div(class = "col-sm-6",
+      div(class = "charts-column",
           div(class = "content-panel",
               graficosUI("graficos_main")
           )
