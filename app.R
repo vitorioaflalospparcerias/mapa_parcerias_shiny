@@ -26,5 +26,3 @@ source("server.R")
 
 # Executa a aplicação Shiny combinando a UI e o Server.
 shinyApp(ui = ui, server = server)
-
-print("teste")
