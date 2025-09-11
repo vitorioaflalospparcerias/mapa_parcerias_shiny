@@ -1,0 +1,10 @@
+name: sp-mapa-parcerias
+title:
+username: sp-parcerias
+account: sp-parcerias
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 15395714
+bundleId: 10883089
+url: https://sp-parcerias.shinyapps.io/sp-mapa-parcerias/
+version: 1

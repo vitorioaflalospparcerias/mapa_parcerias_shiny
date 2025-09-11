@@ -1,10 +1,10 @@
-name: parcerias-sp
+name: parcerias-mapa-sp
 title:
 username: saopaulo-parcerias
 account: saopaulo-parcerias
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
-appId: 15394981
-bundleId: 10882916
-url: https://saopaulo-parcerias.shinyapps.io/parcerias-sp/
+appId: 15395397
+bundleId: 10883037
+url: https://saopaulo-parcerias.shinyapps.io/parcerias-mapa-sp/
 version: 1
